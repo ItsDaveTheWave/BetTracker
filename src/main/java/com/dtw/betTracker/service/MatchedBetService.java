@@ -72,8 +72,8 @@ public class MatchedBetService {
 			return ApiError.entityNotFound(competitionResourceName, competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
 		}
 		
-		MatchedBet savedMatchedBet = matchedBetRepo.save(matchedBet);
-		return new ResponseEntity<>(dtoAssembler.toModel(savedMatchedBet), HttpStatus.CREATED);
+		matchedBet = matchedBetRepo.save(matchedBet);
+		return new ResponseEntity<>(dtoAssembler.toModel(matchedBet), HttpStatus.CREATED);
 	}
 	
 	public ResponseEntity<ApiError> delete(Long id) {
