@@ -31,7 +31,10 @@ public class CompetitionService {
 	private PagedResourcesAssembler<Competition> pagedAssembler;
 	
 	private final String resourceName = "Competition";
-	private final String identifierName = "id";
+	private final String identifierNotFound = "id";
+	private final String identifierAlreadyExists = "name";
+	private final String sportResourceName = "Sport";
+	private final String sportIdentifierName = "name";
 	
 	public ResponseEntity<CompetitionCollectionDto> getAll(Pageable pageable) {
 		
@@ -54,7 +57,34 @@ public class CompetitionService {
 					.get();
 		}
 		else {
-			return ApiError.entityNotFound(resourceName, identifierName, id).buildResponseEntity();
+			return ApiError.entityNotFound(resourceName, identifierNotFound, id).buildResponseEntity();
+		}
+	}
+
+    public ResponseEntity<?> create(CompetitionDto competitionDto) {
+
+		Competition competition = dtoAssembler.toEntity(competitionDto);
+
+		if(competitionRepo.findByCompetitionNameIgnoreCase(competitionDto.getCompetitionName()).isPresent()) {
+			return ApiError.entityAlreadyExists(resourceName, identifierAlreadyExists, competitionDto.getCompetitionName()).buildResponseEntity();
+		}
+
+		if(competition.getSport() == null) {
+			return ApiError.entityNotFound(sportResourceName, sportIdentifierName, competitionDto.getSport()).buildResponseEntity();
+		}
+
+		competition = competitionRepo.save(competition);
+        return new ResponseEntity<>(dtoAssembler.toModel(competition), HttpStatus.CREATED);
+    }
+
+	public ResponseEntity<ApiError> delete(Long id) {
+		
+		if(competitionRepo.existsById(id)) {
+			competitionRepo.deleteById(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		else {
+			return ApiError.entityNotFound(resourceName, identifierNotFound, id).buildResponseEntity();
 		}
 	}
 }
