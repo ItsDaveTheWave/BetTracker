@@ -70,4 +70,10 @@ public class ApiError {
 		apiError.setMessage(resourceName + " with " + identifierName + " [" + indentifierValue + "] already exists");
 		return apiError;
 	}
+	
+	public static ApiError entityDoesntContainEntity(String parentResourceName, String childResourceName, String identifierName, Object indentifierValue) {
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+		apiError.setMessage(parentResourceName + " does not contain " + childResourceName + " with " + identifierName + " [" + indentifierValue + "]");
+		return apiError;
+	}
 }

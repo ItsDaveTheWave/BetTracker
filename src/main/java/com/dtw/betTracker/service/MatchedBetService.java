@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import com.dtw.betTracker.dto.MatchedBetDto;
 import com.dtw.betTracker.dto.assembler.MatchedBetDtoAssembler;
 import com.dtw.betTracker.dto.collection.MatchedBetCollectionDto;
+import com.dtw.betTracker.entity.Competition;
 import com.dtw.betTracker.entity.MatchedBet;
+import com.dtw.betTracker.entity.Sport;
 import com.dtw.betTracker.error.ApiError;
 import com.dtw.betTracker.repo.MatchedBetRepo;
 
@@ -64,12 +66,19 @@ public class MatchedBetService {
 	public ResponseEntity<?> create(MatchedBetDto matchedBetDto) {
 		
 		MatchedBet matchedBet = dtoAssembler.toEntity(matchedBetDto);
+		Sport sport = matchedBet.getSportEvent().getSport();
+		Competition competition = matchedBet.getSportEvent().getCompetition();
 
-		if(matchedBet.getSportEvent().getSport() == null) {
+		if(sport == null) {
 			return ApiError.entityNotFound(sportResourceName, sportIdentifierName, matchedBetDto.getSport()).buildResponseEntity();
 		}
-		if(matchedBet.getSportEvent().getCompetition() == null && matchedBetDto.getCompetition() != null) {
+		if(competition == null && matchedBetDto.getCompetition() != null) {
 			return ApiError.entityNotFound(competitionResourceName, competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
+		}
+		
+		if(!sport.getCompetitions().contains(competition)) {
+			return ApiError.entityDoesntContainEntity(sportResourceName, competitionResourceName, 
+					competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
 		}
 		
 		matchedBet = matchedBetRepo.save(matchedBet);
