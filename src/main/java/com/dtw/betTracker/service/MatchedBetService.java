@@ -85,6 +85,16 @@ public class MatchedBetService {
 		return new ResponseEntity<>(dtoAssembler.toModel(matchedBet), HttpStatus.CREATED);
 	}
 	
+	public ResponseEntity<?> update(MatchedBetDto matchedBetDto, Long id) {
+		
+		if(!matchedBetRepo.existsById(id)) {
+			return ApiError.entityNotFound(resourceName, identifierName, id).buildResponseEntity();
+		}
+		
+		matchedBetDto.setId(id);
+		return new ResponseEntity<>(create(matchedBetDto).getBody(), HttpStatus.OK);
+	}
+	
 	public ResponseEntity<ApiError> delete(Long id) {
 		
 		if(matchedBetRepo.existsById(id)) {
