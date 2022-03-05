@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -31,12 +31,12 @@ public class SportEvent {
 	@Temporal(TemporalType.DATE)
 	private Date gameDate;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "competition_id", referencedColumnName = "id")
 	private Competition competition;
 	
-	@OneToOne
-	@JoinColumn(name = "sport_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "sport_id", referencedColumnName = "id")
 	private Sport sport;
 	
 	@Column(nullable = false)
