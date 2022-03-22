@@ -12,10 +12,13 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import com.dtw.betTracker.controller.MatchedBetController;
+import com.dtw.betTracker.dto.BackBetDto;
 import com.dtw.betTracker.dto.MatchedBetDto;
 import com.dtw.betTracker.entity.MatchedBet;
+import com.dtw.betTracker.entity.pojo.BackBet;
 import com.dtw.betTracker.entity.pojo.SportEvent;
 import com.dtw.betTracker.enums.GameResult;
+import com.dtw.betTracker.repo.BookMakerRepo;
 import com.dtw.betTracker.repo.CompetitionRepo;
 import com.dtw.betTracker.repo.SportRepo;
 
@@ -27,6 +30,9 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 	
 	@Autowired
 	private CompetitionRepo competitionRepo;
+	
+	@Autowired
+	private BookMakerRepo bookMakerRepo;
 	
 	public MatchedBet toEntity(MatchedBetDto dto) {
 		return MatchedBet.builder()
@@ -40,6 +46,14 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 						.team1(dto.getTeam1())
 						.team2(dto.getTeam2())
 						.result(GameResult.valueOf(dto.getResult()))
+						.build())
+				.backBet(
+						BackBet.builder()
+						.bookMaker(bookMakerRepo.findByNameIgnoreCase(dto.getBackBet().getBookMaker()).orElse(null))
+						.bettedResult(dto.getBackBet().getBettedResult())
+						.bettedAmmount(dto.getBackBet().getBettedAmmount())
+						.odds(dto.getBackBet().getOdds())
+						.backReturn(dto.getBackBet().getBackReturn())
 						.build())
 				.totalReturn(dto.getTotalReturn())
 				.bonusType(dto.getBonusType())
@@ -75,6 +89,14 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 				.result(entity.getSportEvent().getResult().name())
 				.totalReturn(entity.getTotalReturn())
 				.bonusType(entity.getBonusType())
+				.backBet(
+						BackBetDto.builder()
+						.bookMaker(entity.getBackBet().getBookMaker().getName())
+						.bettedResult(entity.getBackBet().getBettedResult())
+						.bettedAmmount(entity.getBackBet().getBettedAmmount())
+						.odds(entity.getBackBet().getOdds())
+						.backReturn(entity.getBackBet().getBackReturn())
+						.build())
 				.build();
 	}
 }

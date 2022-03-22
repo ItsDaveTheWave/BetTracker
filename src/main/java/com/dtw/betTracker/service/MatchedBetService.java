@@ -38,6 +38,8 @@ public class MatchedBetService {
 	private final String sportIdentifierName = "name";
 	private final String competitionResourceName = "Competition";
 	private final String competitionIdentifierName = "name";
+	private final String bookMakerResourceName = "BookMaker";
+	private final String bookMakerIdentifierName = "name";
 	
 	public ResponseEntity<MatchedBetCollectionDto> getAll(Pageable pageable) {
 		
@@ -72,6 +74,7 @@ public class MatchedBetService {
 		if(sport == null) {
 			return ApiError.entityNotFound(sportResourceName, sportIdentifierName, matchedBetDto.getSport()).buildResponseEntity();
 		}
+		
 		if(competition == null && matchedBetDto.getCompetition() != null) {
 			return ApiError.entityNotFound(competitionResourceName, competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
 		}
@@ -79,6 +82,10 @@ public class MatchedBetService {
 		if(!sport.getCompetitions().contains(competition)) {
 			return ApiError.entityDoesntContainEntity(sportResourceName, competitionResourceName, 
 					competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
+		}
+		
+		if(matchedBet.getBackBet().getBookMaker() == null) {
+			return ApiError.entityNotFound(bookMakerResourceName, bookMakerIdentifierName, matchedBetDto.getBackBet().getBookMaker()).buildResponseEntity();
 		}
 		
 		matchedBet = matchedBetRepo.save(matchedBet);

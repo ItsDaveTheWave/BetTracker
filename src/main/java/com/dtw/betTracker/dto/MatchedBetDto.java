@@ -2,6 +2,7 @@ package com.dtw.betTracker.dto;
 
 import java.util.Date;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.RepresentationModel;
@@ -50,4 +51,8 @@ public class MatchedBetDto extends RepresentationModel<MatchedBetDto> {
 	private String result;
 	private Double totalReturn;
 	private String bonusType;
+	
+	@NotNull
+	@Valid
+	private BackBetDto backBet;
 }
