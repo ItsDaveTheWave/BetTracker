@@ -72,16 +72,16 @@ public class MatchedBetService {
 		Competition competition = matchedBet.getSportEvent().getCompetition();
 
 		if(sport == null) {
-			return ApiError.entityNotFound(sportResourceName, sportIdentifierName, matchedBetDto.getSport()).buildResponseEntity();
+			return ApiError.entityNotFound(sportResourceName, sportIdentifierName, matchedBetDto.getSportEvent().getSport()).buildResponseEntity();
 		}
 		
-		if(competition == null && matchedBetDto.getCompetition() != null) {
-			return ApiError.entityNotFound(competitionResourceName, competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
+		if(competition == null && matchedBetDto.getSportEvent().getCompetition() != null) {
+			return ApiError.entityNotFound(competitionResourceName, competitionIdentifierName, matchedBetDto.getSportEvent().getCompetition()).buildResponseEntity();
 		}
 		
 		if(!sport.getCompetitions().contains(competition)) {
 			return ApiError.entityDoesntContainEntity(sportResourceName, competitionResourceName, 
-					competitionIdentifierName, matchedBetDto.getCompetition()).buildResponseEntity();
+					competitionIdentifierName, matchedBetDto.getSportEvent().getCompetition()).buildResponseEntity();
 		}
 		
 		if(matchedBet.getBackBet().getBookMaker() == null) {

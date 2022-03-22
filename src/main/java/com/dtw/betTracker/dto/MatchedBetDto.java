@@ -7,8 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.dtw.betTracker.annotation.ValueOfEnum;
-import com.dtw.betTracker.enums.GameResult;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -33,26 +31,16 @@ public class MatchedBetDto extends RepresentationModel<MatchedBetDto> {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", lenient = OptBoolean.FALSE)
 	private Date betDate;
 	
-	@NotNull
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", lenient = OptBoolean.FALSE)
-	private Date gameDate;
-	
-	@NotNull
-	private String sport;
-	private String competition;
-	
-	@NotNull
-	private String team1;
-	
-	@NotNull
-	private String team2;
-	
-	@ValueOfEnum(enumClass = GameResult.class)
-	private String result;
+	@JsonProperty(access = Access.READ_ONLY)
 	private Double totalReturn;
+	
 	private String bonusType;
 	
 	@NotNull
 	@Valid
 	private BackBetDto backBet;
+	
+	@NotNull
+	@Valid
+	private SportEventDto sportEvent;
 }

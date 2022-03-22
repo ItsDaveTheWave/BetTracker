@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.dtw.betTracker.controller.MatchedBetController;
 import com.dtw.betTracker.dto.BackBetDto;
 import com.dtw.betTracker.dto.MatchedBetDto;
+import com.dtw.betTracker.dto.SportEventDto;
 import com.dtw.betTracker.entity.MatchedBet;
 import com.dtw.betTracker.entity.pojo.BackBet;
 import com.dtw.betTracker.entity.pojo.SportEvent;
@@ -40,12 +41,12 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 				.betDate(dto.getBetDate())
 				.sportEvent(
 						SportEvent.builder()
-						.gameDate(dto.getGameDate())
-						.sport(sportRepo.findBySportNameIgnoreCase(dto.getSport()).orElse(null))
-						.competition(competitionRepo.findByCompetitionNameIgnoreCase(dto.getCompetition()).orElse(null))
-						.team1(dto.getTeam1())
-						.team2(dto.getTeam2())
-						.result(GameResult.valueOf(dto.getResult()))
+						.gameDate(dto.getSportEvent().getGameDate())
+						.sport(sportRepo.findBySportNameIgnoreCase(dto.getSportEvent().getSport()).orElse(null))
+						.competition(competitionRepo.findByCompetitionNameIgnoreCase(dto.getSportEvent().getCompetition()).orElse(null))
+						.team1(dto.getSportEvent().getTeam1())
+						.team2(dto.getSportEvent().getTeam2())
+						.result(GameResult.valueOf(dto.getSportEvent().getResult()))
 						.build())
 				.backBet(
 						BackBet.builder()
@@ -81,14 +82,17 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 		return MatchedBetDto.builder()
 				.id(entity.getId())
 				.betDate(entity.getBetDate())
-				.gameDate(entity.getSportEvent().getGameDate())
-				.sport(entity.getSportEvent().getSport() != null ? entity.getSportEvent().getSport().getSportName() : null)
-				.competition(entity.getSportEvent().getCompetition() != null ? entity.getSportEvent().getCompetition().getCompetitionName() : null)
-				.team1(entity.getSportEvent().getTeam1())
-				.team2(entity.getSportEvent().getTeam2())
-				.result(entity.getSportEvent().getResult().name())
 				.totalReturn(entity.getTotalReturn())
 				.bonusType(entity.getBonusType())
+				.sportEvent(
+						SportEventDto.builder()
+						.gameDate(entity.getSportEvent().getGameDate())
+						.sport(entity.getSportEvent().getSport() != null ? entity.getSportEvent().getSport().getSportName() : null)
+						.competition(entity.getSportEvent().getCompetition() != null ? entity.getSportEvent().getCompetition().getCompetitionName() : null)
+						.team1(entity.getSportEvent().getTeam1())
+						.team2(entity.getSportEvent().getTeam2())
+						.result(entity.getSportEvent().getResult().name())
+						.build())
 				.backBet(
 						BackBetDto.builder()
 						.bookMaker(entity.getBackBet().getBookMaker().getName())

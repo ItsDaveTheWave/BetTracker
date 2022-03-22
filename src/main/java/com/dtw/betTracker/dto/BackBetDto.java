@@ -5,6 +5,8 @@ import javax.validation.constraints.Positive;
 
 import com.dtw.betTracker.annotation.ValueOfEnum;
 import com.dtw.betTracker.enums.GameResult;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,5 +34,6 @@ public class BackBetDto {
 	@Positive
 	private Double odds;
 	
+	@JsonProperty(access = Access.READ_ONLY)
 	private Double backReturn;
 }
