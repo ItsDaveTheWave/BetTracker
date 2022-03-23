@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.dtw.betTracker.entity.pojo.BackBet;
+import com.dtw.betTracker.entity.pojo.LayBet;
 import com.dtw.betTracker.entity.pojo.SportEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,9 @@ public class MatchedBet {
 	
 	@Embedded
 	private BackBet backBet;
+	
+	@Embedded
+	private LayBet layBet;
 	
 	private Double totalReturn;
 	private String bonusType;

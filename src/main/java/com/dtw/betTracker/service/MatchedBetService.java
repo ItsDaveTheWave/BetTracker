@@ -1,5 +1,6 @@
 package com.dtw.betTracker.service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class MatchedBetService {
 		Sport sport = matchedBet.getSportEvent().getSport();
 		Competition competition = matchedBet.getSportEvent().getCompetition();
 
+		//check of entities
 		if(sport == null) {
 			return ApiError.entityNotFound(sportResourceName, sportIdentifierName, matchedBetDto.getSportEvent().getSport()).buildResponseEntity();
 		}
@@ -87,6 +89,28 @@ public class MatchedBetService {
 		if(matchedBet.getBackBet().getBookMaker() == null) {
 			return ApiError.entityNotFound(bookMakerResourceName, bookMakerIdentifierName, matchedBetDto.getBackBet().getBookMaker()).buildResponseEntity();
 		}
+		
+		//set liability
+		BigDecimal layBettedAmmount = new BigDecimal(matchedBet.getLayBet().getBettedAmmount().toString());
+		BigDecimal layOdds = new BigDecimal(matchedBet.getLayBet().getOdds().toString());
+		matchedBet.getLayBet().setLiability(layBettedAmmount.multiply(layOdds.subtract(BigDecimal.ONE)).doubleValue());
+		
+		//if backBet wins
+		if(matchedBet.getSportEvent().getResult() == matchedBet.getBackBet().getBettedResult()) {
+			BigDecimal backBettedAmmount = new BigDecimal(matchedBet.getBackBet().getBettedAmmount().toString());
+			BigDecimal backOdds = new BigDecimal(matchedBet.getBackBet().getOdds().toString());
+			
+			matchedBet.getBackBet().setBackReturn(backBettedAmmount.multiply(backOdds.subtract(BigDecimal.ONE)).doubleValue());
+			matchedBet.getLayBet().setLayReturn(-1 * matchedBet.getLayBet().getLiability());
+		}
+		//if layBet wins
+		else {
+			matchedBet.getBackBet().setBackReturn(-1 * matchedBet.getBackBet().getBettedAmmount());
+			matchedBet.getLayBet().setLayReturn(matchedBet.getLayBet().getBettedAmmount());
+		}
+		//total return
+		matchedBet.setTotalReturn(new BigDecimal(matchedBet.getBackBet().getBackReturn().toString())
+				.add(new BigDecimal(matchedBet.getLayBet().getLayReturn().toString())).doubleValue());
 		
 		matchedBet = matchedBetRepo.save(matchedBet);
 		return new ResponseEntity<>(dtoAssembler.toModel(matchedBet), HttpStatus.CREATED);

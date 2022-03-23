@@ -13,10 +13,12 @@ import org.springframework.stereotype.Component;
 
 import com.dtw.betTracker.controller.MatchedBetController;
 import com.dtw.betTracker.dto.BackBetDto;
+import com.dtw.betTracker.dto.LayBetDto;
 import com.dtw.betTracker.dto.MatchedBetDto;
 import com.dtw.betTracker.dto.SportEventDto;
 import com.dtw.betTracker.entity.MatchedBet;
 import com.dtw.betTracker.entity.pojo.BackBet;
+import com.dtw.betTracker.entity.pojo.LayBet;
 import com.dtw.betTracker.entity.pojo.SportEvent;
 import com.dtw.betTracker.enums.GameResult;
 import com.dtw.betTracker.repo.BookMakerRepo;
@@ -51,10 +53,17 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 				.backBet(
 						BackBet.builder()
 						.bookMaker(bookMakerRepo.findByNameIgnoreCase(dto.getBackBet().getBookMaker()).orElse(null))
-						.bettedResult(dto.getBackBet().getBettedResult())
+						.bettedResult(GameResult.valueOf(dto.getBackBet().getBettedResult()))
 						.bettedAmmount(dto.getBackBet().getBettedAmmount())
 						.odds(dto.getBackBet().getOdds())
 						.backReturn(dto.getBackBet().getBackReturn())
+						.build())
+				.layBet(
+						LayBet.builder()
+						.bettedAmmount(dto.getLayBet().getBettedAmmount())
+						.odds(dto.getLayBet().getOdds())
+						.layReturn(dto.getLayBet().getLayReturn())
+						.liability(dto.getLayBet().getLiability())
 						.build())
 				.totalReturn(dto.getTotalReturn())
 				.bonusType(dto.getBonusType())
@@ -96,10 +105,17 @@ public class MatchedBetDtoAssembler implements RepresentationModelAssembler<Matc
 				.backBet(
 						BackBetDto.builder()
 						.bookMaker(entity.getBackBet().getBookMaker().getName())
-						.bettedResult(entity.getBackBet().getBettedResult())
+						.bettedResult(entity.getBackBet().getBettedResult().name())
 						.bettedAmmount(entity.getBackBet().getBettedAmmount())
 						.odds(entity.getBackBet().getOdds())
 						.backReturn(entity.getBackBet().getBackReturn())
+						.build())
+				.layBet(
+						LayBetDto.builder()
+						.bettedAmmount(entity.getLayBet().getBettedAmmount())
+						.odds(entity.getLayBet().getOdds())
+						.layReturn(entity.getLayBet().getLayReturn())
+						.liability(entity.getLayBet().getLiability())
 						.build())
 				.build();
 	}

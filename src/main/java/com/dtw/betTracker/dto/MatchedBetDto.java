@@ -42,5 +42,9 @@ public class MatchedBetDto extends RepresentationModel<MatchedBetDto> {
 	
 	@NotNull
 	@Valid
+	private LayBetDto layBet;
+	
+	@NotNull
+	@Valid
 	private SportEventDto sportEvent;
 }

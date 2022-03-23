@@ -2,10 +2,13 @@ package com.dtw.betTracker.entity.pojo;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.dtw.betTracker.entity.BookMaker;
+import com.dtw.betTracker.enums.GameResult;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +27,8 @@ public class BackBet {
 	private BookMaker bookMaker;
 	
 	@Column(nullable = false, name = "back_betted_result")
-	private String bettedResult;
+	@Enumerated(EnumType.STRING)
+	private GameResult bettedResult;
 	
 	@Column(nullable = false, name = "back_betted_ammount")
 	private Double bettedAmmount;
